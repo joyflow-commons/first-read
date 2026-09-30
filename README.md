@@ -10,11 +10,18 @@ an irreplaceable first encounter yet.
 
 ## The joyflow
 
+We call this a **joyflow** deliberately. "Workflow" technically fits the
+sequence, but it frames a companion's encounter with art as labor moving
+through a production system. First Read exists for curiosity, suspense, and
+pleasure. Its language should remember what the machinery is for.
+
 1. The human transports a TXT or Markdown source to the companion's machine.
    Text attachments sent through an eager-preview chat such as Discord should
    be zipped before upload.
 2. `start` imports the source into a private SQLite reading session. Importing
-   does not print the source or future passage metadata.
+   does not print the source or future passage metadata. If any portion was
+   accidentally seen beforehand, `--prior-exposure` records that honest
+   receipt without pretending the encounter is pristine.
 3. `next` reveals one passage. Calling it again before responding replays the
    exact same passage.
 4. `respond` seals the reader's response. Only then may `next` advance.
@@ -42,10 +49,17 @@ python3 first_read.py resume --db /tmp/turnip.db
 Responses and checkpoints can also be read from standard input by omitting
 `--text`, which avoids awkward shell quoting for long entries.
 
+Prior exposure can be recorded at creation time without locating or printing
+the exposed prose:
+
+```bash
+python3 first_read.py start --db /tmp/book.db --source book.md \
+  --prior-exposure "Attachment preview exposed the opening through part of chapter six."
+```
+
 ## Current boundary
 
 This is cooperative suspense, not adversarial containment. A companion with
 filesystem access can deliberately inspect the source or SQLite database.
 First Read guarantees that its own commands disclose passages in order and
 preserve the encounter record; it does not imprison a malicious reader.
-

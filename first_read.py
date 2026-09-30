@@ -18,7 +18,8 @@ CREATE TABLE session (
     source_name TEXT NOT NULL,
     created_at TEXT NOT NULL,
     current_passage INTEGER,
-    completed INTEGER NOT NULL DEFAULT 0 CHECK (completed IN (0, 1))
+    completed INTEGER NOT NULL DEFAULT 0 CHECK (completed IN (0, 1)),
+    prior_exposure TEXT
 );
 CREATE TABLE passages (
     position INTEGER PRIMARY KEY,
@@ -82,7 +83,12 @@ def split_passages(text: str, target_words: int) -> list[str]:
     return passages
 
 
-def start(db_path: Path, source_path: Path, target_words: int) -> str:
+def start(
+    db_path: Path,
+    source_path: Path,
+    target_words: int,
+    prior_exposure: str | None = None,
+) -> str:
     if db_path.exists():
         raise FirstReadError(f"Refusing to overwrite existing session: {db_path}")
     if target_words < 1:
@@ -101,8 +107,16 @@ def start(db_path: Path, source_path: Path, target_words: int) -> str:
     try:
         connection.executescript(SCHEMA)
         connection.execute(
-            "INSERT INTO session VALUES (1, ?, ?, ?, NULL, 0)",
-            (hashlib.sha256(raw).hexdigest(), source_path.name, now()),
+            """INSERT INTO session(
+                   id, source_sha256, source_name, created_at,
+                   current_passage, completed, prior_exposure
+               ) VALUES (1, ?, ?, ?, NULL, 0, ?)""",
+            (
+                hashlib.sha256(raw).hexdigest(),
+                source_path.name,
+                now(),
+                prior_exposure.strip() if prior_exposure else None,
+            ),
         )
         connection.executemany(
             "INSERT INTO passages(position, body) VALUES (?, ?)",
@@ -190,6 +204,8 @@ def resume(db_path: Path) -> str:
         ).fetchone()
         current = session["current_passage"]
         parts = ["# First Read re-entry packet"]
+        if session["prior_exposure"]:
+            parts.append(f"## Prior-exposure receipt\n{session['prior_exposure']}")
         if checkpoint_row:
             parts.append(
                 f"## Latest checkpoint (version {checkpoint_row['version']})\n{checkpoint_row['body']}"
@@ -230,6 +246,7 @@ def parser() -> argparse.ArgumentParser:
     create.add_argument("--db", type=Path, required=True)
     create.add_argument("--source", type=Path, required=True)
     create.add_argument("--target-words", type=int, default=180)
+    create.add_argument("--prior-exposure")
     for name in ("next", "resume"):
         command = sub.add_parser(name)
         command.add_argument("--db", type=Path, required=True)
@@ -244,7 +261,9 @@ def main() -> int:
     args = parser().parse_args()
     try:
         if args.command == "start":
-            result = start(args.db, args.source, args.target_words)
+            result = start(
+                args.db, args.source, args.target_words, args.prior_exposure
+            )
         elif args.command == "next":
             result = next_passage(args.db)
         elif args.command == "respond":

@@ -72,6 +72,45 @@ class FirstReadCLITest(unittest.TestCase):
         )
         self.assertIn("Refusing to overwrite", result.stderr)
 
+    def test_prior_exposure_receipt_survives_resume(self):
+        self.run_cli(
+            "start",
+            "--db",
+            str(self.db),
+            "--source",
+            str(SOURCE),
+            "--prior-exposure",
+            "I accidentally saw the first purple sock.",
+        )
+        packet = self.run_cli("resume", "--db", str(self.db)).stdout
+        self.assertIn("Prior-exposure receipt", packet)
+        self.assertIn("I accidentally saw the first purple sock.", packet)
+        self.assertNotIn("orchestral mustard", packet)
+
+    def test_full_lifecycle_never_leaks_ending_early(self):
+        self.start()
+        revealed = []
+        for index in range(20):
+            output = self.run_cli("next", "--db", str(self.db)).stdout.strip()
+            if output.startswith("[End of work"):
+                break
+            revealed.append(output)
+            if len(revealed) < 2:
+                self.assertNotIn("alphabetize", output)
+            self.run_cli(
+                "respond",
+                "--db",
+                str(self.db),
+                "--text",
+                f"Synthetic response {index}",
+            )
+        else:
+            self.fail("Reading did not reach its ending within the safety bound")
+        self.assertIn("alphabetize", revealed[-1])
+        self.assertNotIn("alphabetize", "\n".join(revealed[:-1]))
+        packet = self.run_cli("resume", "--db", str(self.db)).stdout
+        self.assertIn("Reading complete", packet)
+
 
 if __name__ == "__main__":
     unittest.main()
