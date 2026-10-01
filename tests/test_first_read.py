@@ -131,6 +131,21 @@ class FirstReadCLITest(unittest.TestCase):
         self.assertTrue(is_scene_break(divider))
         self.assertFalse(is_scene_break("...and then she answered."))
 
+    def test_single_line_paragraph_export_still_flows(self):
+        text = "\r\n".join(
+            [
+                "People Person",
+                "First paragraph carries the opening setup and establishes the voice.",
+                "Second paragraph introduces a warning that should remain suspenseful.",
+                "Third paragraph changes the situation before the ending can be seen.",
+                "Fourth paragraph contains the ending and must not leak into passage one.",
+            ]
+        )
+        passages = split_passages(text, target_words=20)
+        self.assertGreater(len(passages), 1)
+        self.assertNotIn("Fourth paragraph", passages[0])
+        self.assertEqual("\n\n".join(passages).count("Fourth paragraph"), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -70,7 +70,18 @@ def is_scene_break(block: str) -> bool:
 
 
 def split_passages(text: str, target_words: int) -> list[str]:
-    blocks = [block.strip() for block in text.replace("\r\n", "\n").split("\n\n") if block.strip()]
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    coarse_blocks = [block.strip() for block in normalized.split("\n\n") if block.strip()]
+    blocks: list[str] = []
+    for block in coarse_blocks:
+        lines = [line.strip() for line in block.splitlines() if line.strip()]
+        # Phone editors and some web exports use one newline, rather than a
+        # blank line, between prose paragraphs. If such a block is too large
+        # to honor the requested cadence, treat its lines as paragraph units.
+        if len(lines) > 1 and len(block.split()) > target_words:
+            blocks.extend(lines)
+        else:
+            blocks.append(block)
     passages: list[str] = []
     current: list[str] = []
     words = 0
