@@ -8,6 +8,9 @@ future text.
 This repository currently contains a private v0.1 prototype. Do not use it on
 an irreplaceable first encounter yet.
 
+Humans who want an optional menu of reading shapes, warning signs, and plain-
+language adjustment phrases can use [HUMAN-GUIDE.md](HUMAN-GUIDE.md).
+
 ## The joyflow
 
 We call this a **joyflow** deliberately. "Workflow" technically fits the
@@ -62,8 +65,9 @@ Passage shaping should treat a word target as a goalpost rather than a
 steamroller. Authored chapter, section, and scene boundaries outrank target
 length; oversized sections are still split according to the selected pace.
 Local textual signals should improve landing points without exposing future
-prose to the reader. The prototype currently uses a fixed 180-word target,
-paragraph boundaries, headings, and ornamental scene-divider blocks.
+prose to the reader. The prototype currently uses an adaptive Flow target
+centered around 320 words, paragraph boundaries, headings, and ornamental
+scene-divider blocks.
 
 In Shared mode, every revealed passage must be accompanied by its **exact
 final sentence** so the human co-reader knows precisely where to stop. This is
