@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import sqlite3
 import sys
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -60,6 +61,14 @@ def connect(db_path: Path) -> sqlite3.Connection:
     return connection
 
 
+def is_scene_break(block: str) -> bool:
+    """Recognize an ornamental block that contains no letters or numbers."""
+    visible = [character for character in block if not character.isspace()]
+    if len(visible) < 3:
+        return False
+    return not any(unicodedata.category(character)[0] in {"L", "N"} for character in visible)
+
+
 def split_passages(text: str, target_words: int) -> list[str]:
     blocks = [block.strip() for block in text.replace("\r\n", "\n").split("\n\n") if block.strip()]
     passages: list[str] = []
@@ -68,6 +77,11 @@ def split_passages(text: str, target_words: int) -> list[str]:
     for block in blocks:
         block_words = len(block.split())
         is_heading = block.startswith("#")
+        if is_scene_break(block):
+            if current:
+                passages.append("\n\n".join(current))
+            current, words = [block], 0
+            continue
         if is_heading:
             if current:
                 passages.append("\n\n".join(current))

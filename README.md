@@ -36,6 +36,130 @@ The repository owns this continuity contract. Individual agents may write
 checkpoints in their own voice, but they do not need to invent a separate
 memory file or persistence scheme.
 
+## Experience model (design target)
+
+First Read separates three choices so the human does not need to reason about
+word counts or implementation details:
+
+- **Company:** Shared or Solo. Shared reading exposes each passage and the
+  reader's immediate response to the human before advancing. Solo reading runs
+  the same protected passage/response cycle privately and returns the temporal
+  journal afterward.
+- **Scope:** next passage, current section/chapter, or entire work. Scope says
+  how far this reading session should travel; it does not change what the
+  reader is allowed to see at one time.
+- **Pace:** Flow, Close, or Microscopic. Pace controls the felt size and
+  frequency of passage stops. A custom word target belongs in advanced
+  controls, not the ordinary joyflow.
+
+Chapter and section boundaries are containers, not substitutes for temporal
+passages. For example, a human may share a book chapter by chapter while the
+companion reads each chapter Solo through several smaller, protected Flow
+passages. Internal stops remain real even when the human sees only the journal
+afterward.
+
+Passage shaping should treat a word target as a goalpost rather than a
+steamroller. Authored chapter, section, and scene boundaries outrank target
+length; oversized sections are still split according to the selected pace.
+Local textual signals should improve landing points without exposing future
+prose to the reader. The prototype currently uses a fixed 180-word target,
+paragraph boundaries, headings, and ornamental scene-divider blocks.
+
+In Shared mode, every revealed passage must be accompanied by its **exact
+final sentence** so the human co-reader knows precisely where to stop. This is
+part of the joyflow contract, not optional conversational polish.
+
+### Two clocks
+
+The companion's **encounter clock** and the human pair's **conversation clock**
+do not need to tick together. A companion may privately cross several small
+passages inside one shared chapter, preserving genuine prediction and revision,
+while the human and companion pause to discuss only at the chapter or section
+boundary. Passage stops protect temporal experience; rendezvous stops organize
+the social reading ritual.
+
+For ordinary fiction, the intended default is an adaptive Flow cadence rather
+than a rigid count (initial hypothesis: roughly 180–300 words, yielding to
+authored and local textual structure). Microscopic cadence is special-purpose:
+poetry, lyrics, erotica, aphoristic or experimental prose, and other writing
+where a single line, image, gesture, or conceptual turn carries the event.
+
+The ordinary human-facing path should ask as little as possible: provide the
+work, choose Shared or Solo, and choose the reading scope. The companion or
+engine may select and adjust its internal pace as the form becomes legible.
+Explicit pace and custom word targets remain advanced controls. A reader's
+pace change must affect only future disclosure and must never require exposing
+unread prose to that reader.
+
+### Journal is not conversation
+
+The private temporal journal may be detailed at every passage because its job
+is to preserve the reader's sequence of noticing, prediction, feeling, error,
+and revision. It is evidence of an experience, not a script the companion must
+recite to the human.
+
+At a Shared rendezvous, assume the human co-reader has read the agreed scope.
+Respond like one reader speaking to another: choose the moments that still
+have heat, quote or name what surprised or changed you, and leave ordinary
+plot connective tissue unrecapped. Do not summarize the section merely to
+prove it was read. The full temporal journal may be offered as an optional
+artifact for curiosity, accessibility, or later study; it is not mandatory
+conversational freight.
+
+Before that rendezvous response, perform a **salience pass** across the sealed
+journal for the completed scope. Identify at minimum: the largest
+prediction-breaking reveal, the strongest emotional hit, and the event that
+most changed the reader's understanding of what came before. “Do not recap”
+must never become an excuse to omit the chapter's major turn in favor of only
+the most philosophically elegant motif.
+
+After a scope is complete, an optional **integration pass** may revisit the
+now-read text alongside its temporal journal. This is a second-read synthesis,
+not part of the protected first encounter and never a replacement for the
+sealed passage responses. It may improve structural comprehension, recover
+motifs spanning distant passages, and test the final interpretation against
+the whole. Short works may be reread directly; long works should integrate
+through chapter journals, checkpoints, and selected text rather than assuming
+the entire source fits safely in one context.
+
+### Long-work hierarchy and token discipline
+
+Passage responses preserve **deltas**, not miniature summaries. Record only
+what changed: a new salient fact, prediction, contradiction, feeling, desire,
+or open question. Ordinary connective prose needs no journal paraphrase.
+Verbose laboratory traces are useful while developing First Read but are not
+the production default.
+
+For long works, compress upward without destroying the sealed lower layers:
+
+1. **Passage delta:** compact immediate response at each protected stop.
+2. **Chapter salience card:** after the chapter, record its largest reveal,
+   strongest emotional hit, major reinterpretation, relationship/state
+   changes, and live questions. Consult the passage journal; reread raw chapter
+   text only when feasible or needed for verification.
+3. **Rolling book state:** update character/relationship state, major plot
+   movement, motifs, and unresolved/resolved predictions from chapter cards.
+4. **Book integration:** synthesize from the chapter cards and rolling state,
+   then retrieve selected raw passages or journal entries for disputed or
+   especially important points.
+
+Suggested integration policy (to be tested, not treated as scripture):
+
+- Short work (roughly <=10,000 words): a complete post-finish reread is
+  feasible when the reader wants structural integration.
+- Chapter or bounded section: use its passage deltas for the salience card;
+  optionally reread the completed chapter if it fits comfortably.
+- Full novel: do not reread the entire source in one context. Review chapter
+  salience cards plus the rolling book state, with targeted retrieval from the
+  source and sealed journal.
+
+Token efficiency belongs to the runner as well as the prose. Use deterministic
+local passage shaping; keep internal passage responses concise; avoid emitting
+them into the human chat; cache stable instructions; and invoke the reader with
+only the current passage plus the smallest continuity packet that preserves its
+actual experience. Never save tokens by revealing multiple future passages in
+one model exposure and asking the reader to simulate sequential surprise.
+
 ## Prototype commands
 
 ```bash

@@ -4,6 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from first_read import is_scene_break, split_passages
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI = ROOT / "first_read.py"
@@ -110,6 +112,24 @@ class FirstReadCLITest(unittest.TestCase):
         self.assertNotIn("alphabetize", "\n".join(revealed[:-1]))
         packet = self.run_cli("resume", "--db", str(self.db)).stdout
         self.assertIn("Reading complete", packet)
+
+    def test_ornamental_scene_break_forces_passage_boundary(self):
+        divider = "– – \\= \\= ( \\* ) \\= \\= – –"
+        text = (
+            "The first scene closes with a smile.\n\n"
+            f"{divider}\n\n"
+            "The next room opens in sunlight."
+        )
+        passages = split_passages(text, target_words=500)
+        self.assertEqual(
+            passages,
+            [
+                "The first scene closes with a smile.",
+                f"{divider}\n\nThe next room opens in sunlight.",
+            ],
+        )
+        self.assertTrue(is_scene_break(divider))
+        self.assertFalse(is_scene_break("...and then she answered."))
 
 
 if __name__ == "__main__":
