@@ -78,9 +78,11 @@ while the human and companion pause to discuss only at the chapter or section
 boundary. Passage stops protect temporal experience; rendezvous stops organize
 the social reading ritual.
 
-For ordinary fiction, the intended default is an adaptive Flow cadence rather
-than a rigid count (initial hypothesis: roughly 180–300 words, yielding to
-authored and local textual structure). Microscopic cadence is special-purpose:
+For ordinary fiction, the recommended default is an adaptive Flow cadence
+centered around 320 words (usually roughly 250–400 words, yielding to authored
+and local textual structure). This is the default for chapters and ordinary
+short stories. Closer reading may use roughly 140–220 words; Microscopic
+cadence is special-purpose:
 poetry, lyrics, erotica, aphoristic or experimental prose, and other writing
 where a single line, image, gesture, or conceptual turn carries the event.
 
@@ -90,6 +92,13 @@ engine may select and adjust its internal pace as the form becomes legible.
 Explicit pace and custom word targets remain advanced controls. A reader's
 pace change must affect only future disclosure and must never require exposing
 unread prose to that reader.
+
+For books, the natural social and continuity unit is one authored chapter or
+bounded section at a time, with several protected Flow passages inside it. A
+whole-book run should still finish chapter salience and rolling-state updates
+before advancing. Chapter containers are a design target; the v0.1 prototype
+currently honors Markdown headings as passage boundaries but does not yet
+store a formal book/chapter/passage hierarchy.
 
 ### Journal is not conversation
 
@@ -169,6 +178,10 @@ python3 first_read.py respond --db /tmp/turnip.db --text "The lint is suspicious
 python3 first_read.py checkpoint --db /tmp/turnip.db --text "I distrust the dryer."
 python3 first_read.py resume --db /tmp/turnip.db
 ```
+
+`start` fails closed before revealing prose if import produces a passage far
+larger than the requested cadence. This catches malformed paragraph exports
+instead of spending an irreplaceable first encounter on one accidental blob.
 
 Responses and checkpoints can also be read from standard input by omitting
 `--text`, which avoids awkward shell quoting for long entries.

@@ -43,6 +43,8 @@ CREATE TABLE checkpoints (
 );
 """
 
+DEFAULT_FLOW_WORDS = 320
+
 
 class FirstReadError(Exception):
     pass
@@ -85,6 +87,8 @@ def split_passages(text: str, target_words: int) -> list[str]:
     passages: list[str] = []
     current: list[str] = []
     words = 0
+    minimum_words = max(1, round(target_words * 0.78))
+    maximum_words = max(target_words, round(target_words * 1.25))
     for block in blocks:
         block_words = len(block.split())
         is_heading = block.startswith("#")
@@ -98,7 +102,11 @@ def split_passages(text: str, target_words: int) -> list[str]:
                 passages.append("\n\n".join(current))
             current, words = [block], 0
             continue
-        if current and words and words + block_words > target_words:
+        proposed_words = words + block_words
+        if current and words and (
+            proposed_words > maximum_words
+            or (words >= minimum_words and proposed_words > target_words)
+        ):
             passages.append("\n\n".join(current))
             current, words = [], 0
         current.append(block)
@@ -126,6 +134,14 @@ def start(
     passages = split_passages(text, target_words)
     if not passages:
         raise FirstReadError("Source contains no readable passages")
+    largest_passage = max(len(passage.split()) for passage in passages)
+    maximum_safe_words = max(500, target_words * 2)
+    if largest_passage > maximum_safe_words:
+        raise FirstReadError(
+            "Import produced an oversized passage before first reveal "
+            f"({largest_passage} words; safety limit {maximum_safe_words}). "
+            "Check paragraph formatting or choose a larger --target-words value."
+        )
 
     db_path.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(db_path)
@@ -270,7 +286,12 @@ def parser() -> argparse.ArgumentParser:
     create = sub.add_parser("start")
     create.add_argument("--db", type=Path, required=True)
     create.add_argument("--source", type=Path, required=True)
-    create.add_argument("--target-words", type=int, default=180)
+    create.add_argument(
+        "--target-words",
+        type=int,
+        default=DEFAULT_FLOW_WORDS,
+        help="passage goalpost (default: 320-word Flow cadence)",
+    )
     create.add_argument("--prior-exposure")
     for name in ("next", "resume"):
         command = sub.add_parser(name)

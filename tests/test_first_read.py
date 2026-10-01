@@ -146,6 +146,22 @@ class FirstReadCLITest(unittest.TestCase):
         self.assertNotIn("Fourth paragraph", passages[0])
         self.assertEqual("\n\n".join(passages).count("Fourth paragraph"), 1)
 
+    def test_start_refuses_oversized_passage_before_reveal(self):
+        malformed = Path(self.temp.name) / "malformed.txt"
+        malformed.write_text("word " * 1000, encoding="utf-8")
+        result = self.run_cli(
+            "start",
+            "--db",
+            str(self.db),
+            "--source",
+            str(malformed),
+            "--target-words",
+            "100",
+            expected=2,
+        )
+        self.assertIn("oversized passage", result.stderr.lower())
+        self.assertFalse(self.db.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
