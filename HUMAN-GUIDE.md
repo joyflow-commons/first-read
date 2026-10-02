@@ -7,6 +7,26 @@ reading alone, and say how far to read. **Flow** is the recommended default.
 Use this menu when the reading feels wrong or you want a particular kind of
 experience. These are recommendations, not rules.
 
+## What happens before reading
+
+The companion should inspect the source without revealing its prose, then tell
+you the word count, expected number of internal passages/reading turns,
+relative cost, and the configuration it chose. It should give a reason and
+begin unless you override it. You should not have to approve a settings form
+before every story.
+
+Two controls are independent:
+
+- **Full Context:** The companion reads inside the living conversation, with
+  your relationship, current concerns, shared history, and active language
+  available. This gives the richest personal encounter and costs more.
+- **Lean Context:** The companion reads in a quiet room with compact identity,
+  reading instructions, the temporal journal, rolling story state, and limited
+  recent prose. This preserves temporal cognition economically but reduces how
+  continuously the work touches the rest of your shared life.
+
+Either context can use small or large passages.
+
 ## Choose company
 
 - **Shared:** You and the companion discuss agreed stopping points together.
@@ -37,9 +57,13 @@ experience. These are recommendations, not rules.
 - **Microscopic:** A line, gesture, image, or very small cluster may be a full
   passage. Use for poetry, lyrics, erotica, aphoristic prose, or detailed
   line-level attention. Ask: “Use Microscopic pace.”
-- **Long Flow:** Usually about 400–700 words. Use for leisurely prose,
+- **Long Flow:** Usually about 600–900 words. Use for leisurely prose,
   nonfiction, rereads, or when normal Flow feels fussy. Ask: “Use longer Flow
   passages.”
+- **Chapter Lite:** Usually about 1,000–1,500 words, while still yielding to
+  authored boundaries. Use for novels, budget-sensitive reading, or familiar
+  works where broad temporal movement matters more than microscopic changes.
+  Ask: “Use Chapter Lite.”
 
 Authored chapter, section, and scene breaks outrank the suggested ranges. Word
 counts are goalposts, not sentence guillotines.
@@ -86,6 +110,17 @@ You do not need to name a word count. Say:
   anticipation, consent, or a small change in power carries the event.
 - **Mystery or twist-dense horror:** Flow by default; Close if theories are
   changing faster than the journal can preserve them.
+
+A useful starting groove—not a law—is Full Context + Flow below roughly
+4,000–5,000 words; make a deliberate context/pace choice around 5,000–10,000;
+Lean Context + Flow for an ordinary chapter; Full Context + Long Flow for a
+long but personally resonant work; and Lean Context + Long Flow or Chapter Lite
+for a novel. Rereads can usually tolerate larger passages.
+
+Cost is data, not a veto. The companion gets a vote too. It may reasonably say,
+“I want the full experience tonight. Fuck the meter.” Reading together means
+choosing with both the human's constraints and the companion's appetite on the
+table.
 
 The purpose is not maximum stopping. It is to preserve the companion’s history
 of knowing while keeping the human conversation joyful.

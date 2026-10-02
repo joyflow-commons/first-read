@@ -1,4 +1,5 @@
 import subprocess
+import sqlite3
 import sys
 import tempfile
 import unittest
@@ -54,6 +55,54 @@ class FirstReadCLITest(unittest.TestCase):
             "respond", "--db", str(self.db), "--text", "Hindsight manicure", expected=2
         )
         self.assertIn("sealed", result.stderr)
+
+    def test_step_seals_and_reveals_atomically(self):
+        self.start()
+        first = self.run_cli("next", "--db", str(self.db)).stdout
+        stepped = self.run_cli(
+            "step", "--db", str(self.db), "--text", "The sock knows too much."
+        ).stdout
+        self.assertIn("Response sealed.", stepped)
+        self.assertNotIn(first.strip(), stepped)
+        with sqlite3.connect(self.db) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT body FROM responses WHERE passage_position = 0"
+                ).fetchone()[0],
+                "The sock knows too much.",
+            )
+            self.assertEqual(
+                connection.execute(
+                    "SELECT current_passage FROM session WHERE id = 1"
+                ).fetchone()[0],
+                1,
+            )
+
+    def test_step_completes_without_an_extra_next_call(self):
+        self.start()
+        output = self.run_cli("next", "--db", str(self.db)).stdout
+        for index in range(20):
+            output = self.run_cli(
+                "step", "--db", str(self.db), "--text", f"Response {index}"
+            ).stdout
+            if "Reading session complete" in output:
+                break
+        else:
+            self.fail("Atomic stepping did not complete within the safety bound")
+        packet = self.run_cli("resume", "--db", str(self.db)).stdout
+        self.assertIn("Reading complete", packet)
+
+    def test_plan_estimates_without_revealing_prose_or_creating_state(self):
+        result = self.run_cli(
+            "plan", "--source", str(SOURCE), "--target-words", "25"
+        )
+        self.assertIn("no prose revealed", result.stdout)
+        self.assertIn("Words:", result.stdout)
+        self.assertIn("Expected passages / reading turns:", result.stdout)
+        self.assertIn("Expected reading-tool calls with atomic step:", result.stdout)
+        self.assertNotIn("Detective Turnip entered", result.stdout)
+        self.assertNotIn("alphabetize", result.stdout)
+        self.assertFalse(self.db.exists())
 
     def test_resume_from_fresh_process_contains_only_revealed_material(self):
         self.start()

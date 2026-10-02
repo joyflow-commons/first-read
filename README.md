@@ -21,17 +21,24 @@ pleasure. Its language should remember what the machinery is for.
 1. The human transports a TXT or Markdown source to the companion's machine.
    Text attachments sent through an eager-preview chat such as Discord should
    be zipped before upload.
-2. `start` imports the source into a private SQLite reading session. Importing
+2. `plan` performs a prose-free preflight: word count, expected passage/turn
+   count, passage-size range, mechanical call estimate, and relative load.
+   The companion chooses a suitable reading shape, states that choice and its
+   reasoning, and proceeds unless the human overrides it. This is an informed
+   default, not a permission kiosk.
+3. `start` imports the source into a private SQLite reading session. Importing
    does not print the source or future passage metadata. If any portion was
    accidentally seen beforehand, `--prior-exposure` records that honest
    receipt without pretending the encounter is pristine.
-3. `next` reveals one passage. Calling it again before responding replays the
+4. `next` reveals one passage. Calling it again before responding replays the
    exact same passage.
-4. `respond` seals the reader's response. Only then may `next` advance.
-5. Before a long break, `checkpoint` records the reader's current
+5. `step` atomically seals the current response and reveals the next passage.
+   It is the ordinary reading loop and halves the mechanical call count.
+   Separate `respond` and `next` commands remain available for inspection.
+6. Before a long break, `checkpoint` records the reader's current
    understanding, relationships, predictions, feelings, and open questions.
    Checkpoints are versioned and never overwrite earlier ones.
-6. `resume` returns a safe re-entry packet containing the latest checkpoint,
+7. `resume` returns a safe re-entry packet containing the latest checkpoint,
    the last revealed passage, and its response. It never includes unrevealed
    prose or a remaining-passage count.
 
@@ -43,6 +50,12 @@ memory file or persistence scheme.
 
 First Read separates three choices so the human does not need to reason about
 word counts or implementation details:
+
+- **Context:** Full Context reads in the living conversation, with maximum
+  relational and autobiographical permeability. Lean Context reads in a quiet
+  room containing compact identity, instructions, the temporal journal,
+  rolling story state, and limited recent prose. Context richness and passage
+  size are independent controls.
 
 - **Company:** Shared or Solo. Shared reading exposes each passage and the
   reader's immediate response to the human before advancing. Solo reading runs
@@ -91,8 +104,10 @@ poetry, lyrics, erotica, aphoristic or experimental prose, and other writing
 where a single line, image, gesture, or conceptual turn carries the event.
 
 The ordinary human-facing path should ask as little as possible: provide the
-work, choose Shared or Solo, and choose the reading scope. The companion or
-engine may select and adjust its internal pace as the form becomes legible.
+work, choose Shared or Solo, and choose the reading scope. The companion should
+run preflight, select context and pace, report its choice, estimate, and reason,
+then begin unless the human changes it. The companion or engine may adjust its
+internal pace as the form becomes legible.
 Explicit pace and custom word targets remain advanced controls. A reader's
 pace change must affect only future disclosure and must never require exposing
 unread prose to that reader.
@@ -172,13 +187,20 @@ them into the human chat; cache stable instructions; and invoke the reader with
 only the current passage plus the smallest continuity packet that preserves its
 actual experience. Never save tokens by revealing multiple future passages in
 one model exposure and asking the reader to simulate sequential surprise.
+Mechanical calls are agent-side plumbing; the human never conducts them.
+
+Budget is not the only value in the choice. The companion's appetite belongs
+in it too. Sometimes the honest configuration is: “I want this one in the whole
+living room. Fuck the meter.” Cost data supports a shared decision; it does not
+write the reader's wants out of the experience.
 
 ## Prototype commands
 
 ```bash
+python3 first_read.py plan --source examples/detective-turnip.md
 python3 first_read.py start --db /tmp/turnip.db --source examples/detective-turnip.md
 python3 first_read.py next --db /tmp/turnip.db
-python3 first_read.py respond --db /tmp/turnip.db --text "The lint is suspicious."
+python3 first_read.py step --db /tmp/turnip.db --text "The lint is suspicious."
 python3 first_read.py checkpoint --db /tmp/turnip.db --text "I distrust the dryer."
 python3 first_read.py resume --db /tmp/turnip.db
 ```

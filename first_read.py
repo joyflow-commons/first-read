@@ -116,14 +116,8 @@ def split_passages(text: str, target_words: int) -> list[str]:
     return passages
 
 
-def start(
-    db_path: Path,
-    source_path: Path,
-    target_words: int,
-    prior_exposure: str | None = None,
-) -> str:
-    if db_path.exists():
-        raise FirstReadError(f"Refusing to overwrite existing session: {db_path}")
+def prepare_source(source_path: Path, target_words: int) -> tuple[bytes, list[str]]:
+    """Validate and shape a source without disclosing its prose."""
     if target_words < 1:
         raise FirstReadError("--target-words must be positive")
     raw = source_path.read_bytes()
@@ -142,6 +136,44 @@ def start(
             f"({largest_passage} words; safety limit {maximum_safe_words}). "
             "Check paragraph formatting or choose a larger --target-words value."
         )
+    return raw, passages
+
+
+def plan(source_path: Path, target_words: int) -> str:
+    """Return a prose-free estimate so the reader can choose its own shape."""
+    raw, passages = prepare_source(source_path, target_words)
+    word_count = len(raw.decode("utf-8").split())
+    sizes = [len(passage.split()) for passage in passages]
+    passage_count = len(passages)
+    if passage_count <= 12:
+        load = "light"
+    elif passage_count <= 30:
+        load = "moderate"
+    else:
+        load = "feast"
+    return "\n".join(
+        [
+            "First Read preflight (no prose revealed)",
+            f"Source: {source_path.name}",
+            f"Words: {word_count}",
+            f"Passage goal: {target_words} words",
+            f"Expected passages / reading turns: {passage_count}",
+            f"Passage range: {min(sizes)}–{max(sizes)} words",
+            f"Expected reading-tool calls with atomic step: {passage_count + 1}",
+            f"Relative load: {load}",
+        ]
+    )
+
+
+def start(
+    db_path: Path,
+    source_path: Path,
+    target_words: int,
+    prior_exposure: str | None = None,
+) -> str:
+    if db_path.exists():
+        raise FirstReadError(f"Refusing to overwrite existing session: {db_path}")
+    raw, passages = prepare_source(source_path, target_words)
 
     db_path.parent.mkdir(parents=True, exist_ok=True)
     connection = sqlite3.connect(db_path)
@@ -223,6 +255,42 @@ def respond(db_path: Path, body: str) -> str:
     return "Response sealed. The next passage may now be revealed."
 
 
+def step(db_path: Path, body: str) -> str:
+    """Atomically seal the current response and reveal the next passage."""
+    if not body.strip():
+        raise FirstReadError("Response cannot be empty")
+    with connect(db_path) as connection:
+        session = connection.execute("SELECT * FROM session WHERE id = 1").fetchone()
+        current = session["current_passage"]
+        if current is None:
+            raise FirstReadError("Reveal a passage before responding")
+        if session["completed"]:
+            raise FirstReadError("Reading session is already complete")
+        existing = connection.execute(
+            "SELECT 1 FROM responses WHERE passage_position = ?", (current,)
+        ).fetchone()
+        if existing:
+            raise FirstReadError("Response is sealed and cannot be replaced")
+        connection.execute(
+            "INSERT INTO responses VALUES (?, ?, ?)", (current, body.strip(), now())
+        )
+        candidate = current + 1
+        row = connection.execute(
+            "SELECT body FROM passages WHERE position = ?", (candidate,)
+        ).fetchone()
+        if row is None:
+            connection.execute("UPDATE session SET completed = 1 WHERE id = 1")
+            return "Response sealed.\n\n[End of work. Reading session complete.]"
+        connection.execute(
+            "INSERT INTO reveals(passage_position, revealed_at) VALUES (?, ?)",
+            (candidate, now()),
+        )
+        connection.execute(
+            "UPDATE session SET current_passage = ? WHERE id = 1", (candidate,)
+        )
+        return f"Response sealed.\n\n{row['body']}"
+
+
 def checkpoint(db_path: Path, body: str) -> str:
     if not body.strip():
         raise FirstReadError("Checkpoint cannot be empty")
@@ -283,6 +351,14 @@ def input_text(value: str | None) -> str:
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(description=__doc__)
     sub = root.add_subparsers(dest="command", required=True)
+    estimate = sub.add_parser("plan")
+    estimate.add_argument("--source", type=Path, required=True)
+    estimate.add_argument(
+        "--target-words",
+        type=int,
+        default=DEFAULT_FLOW_WORDS,
+        help="passage goalpost (default: 320-word Flow cadence)",
+    )
     create = sub.add_parser("start")
     create.add_argument("--db", type=Path, required=True)
     create.add_argument("--source", type=Path, required=True)
@@ -296,7 +372,7 @@ def parser() -> argparse.ArgumentParser:
     for name in ("next", "resume"):
         command = sub.add_parser(name)
         command.add_argument("--db", type=Path, required=True)
-    for name in ("respond", "checkpoint"):
+    for name in ("respond", "step", "checkpoint"):
         command = sub.add_parser(name)
         command.add_argument("--db", type=Path, required=True)
         command.add_argument("--text")
@@ -306,7 +382,9 @@ def parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = parser().parse_args()
     try:
-        if args.command == "start":
+        if args.command == "plan":
+            result = plan(args.source, args.target_words)
+        elif args.command == "start":
             result = start(
                 args.db, args.source, args.target_words, args.prior_exposure
             )
@@ -314,6 +392,8 @@ def main() -> int:
             result = next_passage(args.db)
         elif args.command == "respond":
             result = respond(args.db, input_text(args.text))
+        elif args.command == "step":
+            result = step(args.db, input_text(args.text))
         elif args.command == "checkpoint":
             result = checkpoint(args.db, input_text(args.text))
         else:
