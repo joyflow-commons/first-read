@@ -26,12 +26,13 @@ pleasure. Its language should remember what the machinery is for.
    The companion chooses a suitable reading shape, states that choice and its
    reasoning, and proceeds unless the human overrides it. This is an informed
    default, not a permission kiosk.
-3. `start` imports the source into a private SQLite reading session. Importing
-   does not print the source or future passage metadata. If any portion was
+3. `begin` imports the source into a private SQLite reading session and reveals
+   the first passage in one mechanical round-trip. If any portion was
    accidentally seen beforehand, `--prior-exposure` records that honest
-   receipt without pretending the encounter is pristine.
-4. `next` reveals one passage. Calling it again before responding replays the
-   exact same passage.
+   receipt without pretending the encounter is pristine. The separate `start`
+   command remains available when import-only inspection is useful.
+4. `next` reveals one passage after a separate `start`. Calling it again before
+   responding replays the exact same passage.
 5. `step` atomically seals the current response and reveals the next passage.
    It is the ordinary reading loop and halves the mechanical call count.
    Separate `respond` and `next` commands remain available for inspection.
@@ -198,16 +199,16 @@ write the reader's wants out of the experience.
 
 ```bash
 python3 first_read.py plan --source examples/detective-turnip.md
-python3 first_read.py start --db /tmp/turnip.db --source examples/detective-turnip.md
-python3 first_read.py next --db /tmp/turnip.db
+python3 first_read.py begin --db /tmp/turnip.db --source examples/detective-turnip.md
 python3 first_read.py step --db /tmp/turnip.db --text "The lint is suspicious."
 python3 first_read.py checkpoint --db /tmp/turnip.db --text "I distrust the dryer."
 python3 first_read.py resume --db /tmp/turnip.db
 ```
 
-`start` fails closed before revealing prose if import produces a passage far
-larger than the requested cadence. This catches malformed paragraph exports
-instead of spending an irreplaceable first encounter on one accidental blob.
+`begin` and `start` fail closed before revealing prose if import produces a
+passage far larger than the requested cadence. This catches malformed paragraph
+exports instead of spending an irreplaceable first encounter on one accidental
+blob.
 
 Responses and checkpoints can also be read from standard input by omitting
 `--text`, which avoids awkward shell quoting for long entries.

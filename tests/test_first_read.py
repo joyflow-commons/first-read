@@ -78,6 +78,34 @@ class FirstReadCLITest(unittest.TestCase):
                 1,
             )
 
+    def test_begin_creates_session_and_reveals_first_passage(self):
+        result = self.run_cli(
+            "begin",
+            "--db",
+            str(self.db),
+            "--source",
+            str(SOURCE),
+            "--target-words",
+            "25",
+        )
+        self.assertIn("Reading session created.", result.stdout)
+        self.assertIn("Detective Turnip entered", result.stdout)
+        with sqlite3.connect(self.db) as connection:
+            self.assertEqual(
+                connection.execute(
+                    "SELECT current_passage FROM session WHERE id = 1"
+                ).fetchone()[0],
+                0,
+            )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM reveals").fetchone()[0],
+                1,
+            )
+            self.assertEqual(
+                connection.execute("SELECT COUNT(*) FROM responses").fetchone()[0],
+                0,
+            )
+
     def test_step_completes_without_an_extra_next_call(self):
         self.start()
         output = self.run_cli("next", "--db", str(self.db)).stdout
@@ -99,7 +127,10 @@ class FirstReadCLITest(unittest.TestCase):
         self.assertIn("no prose revealed", result.stdout)
         self.assertIn("Words:", result.stdout)
         self.assertIn("Expected passages / reading turns:", result.stdout)
-        self.assertIn("Expected reading-tool calls with atomic step:", result.stdout)
+        self.assertIn(
+            "Expected session calls after preflight with begin + step:",
+            result.stdout,
+        )
         self.assertNotIn("Detective Turnip entered", result.stdout)
         self.assertNotIn("alphabetize", result.stdout)
         self.assertFalse(self.db.exists())

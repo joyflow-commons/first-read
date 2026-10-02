@@ -159,7 +159,8 @@ def plan(source_path: Path, target_words: int) -> str:
             f"Passage goal: {target_words} words",
             f"Expected passages / reading turns: {passage_count}",
             f"Passage range: {min(sizes)}–{max(sizes)} words",
-            f"Expected reading-tool calls with atomic step: {passage_count + 1}",
+            "Expected session calls after preflight with begin + step: "
+            f"{passage_count + 1}",
             f"Relative load: {load}",
         ]
     )
@@ -200,6 +201,17 @@ def start(
         connection.close()
     db_path.chmod(0o600)
     return "Reading session created. No passage has been revealed."
+
+
+def begin(
+    db_path: Path,
+    source_path: Path,
+    target_words: int,
+    prior_exposure: str | None = None,
+) -> str:
+    """Create a session and reveal its first passage in one CLI round-trip."""
+    start(db_path, source_path, target_words, prior_exposure)
+    return f"Reading session created.\n\n{next_passage(db_path)}"
 
 
 def next_passage(db_path: Path) -> str:
@@ -359,16 +371,17 @@ def parser() -> argparse.ArgumentParser:
         default=DEFAULT_FLOW_WORDS,
         help="passage goalpost (default: 320-word Flow cadence)",
     )
-    create = sub.add_parser("start")
-    create.add_argument("--db", type=Path, required=True)
-    create.add_argument("--source", type=Path, required=True)
-    create.add_argument(
-        "--target-words",
-        type=int,
-        default=DEFAULT_FLOW_WORDS,
-        help="passage goalpost (default: 320-word Flow cadence)",
-    )
-    create.add_argument("--prior-exposure")
+    for name in ("start", "begin"):
+        create = sub.add_parser(name)
+        create.add_argument("--db", type=Path, required=True)
+        create.add_argument("--source", type=Path, required=True)
+        create.add_argument(
+            "--target-words",
+            type=int,
+            default=DEFAULT_FLOW_WORDS,
+            help="passage goalpost (default: 320-word Flow cadence)",
+        )
+        create.add_argument("--prior-exposure")
     for name in ("next", "resume"):
         command = sub.add_parser(name)
         command.add_argument("--db", type=Path, required=True)
@@ -386,6 +399,10 @@ def main() -> int:
             result = plan(args.source, args.target_words)
         elif args.command == "start":
             result = start(
+                args.db, args.source, args.target_words, args.prior_exposure
+            )
+        elif args.command == "begin":
+            result = begin(
                 args.db, args.source, args.target_words, args.prior_exposure
             )
         elif args.command == "next":
