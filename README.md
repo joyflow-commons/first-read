@@ -205,6 +205,38 @@ python3 first_read.py checkpoint --db /tmp/turnip.db --text "I distrust the drye
 python3 first_read.py resume --db /tmp/turnip.db
 ```
 
+### URL ingest companion
+
+`first_read_ingest.py` fetches a public web article, extracts article-shaped
+Markdown with Trafilatura, and stores it under an opaque filename without
+printing the title, URL, or any prose. Its console receipt contains only the
+source/metadata filenames, word count, redirect flag, and a coarse
+article-versus-paywall/stub verdict. The original URL and fetch provenance live
+in the owner-only JSON sidecar.
+
+Keep the optional extractor in its own environment so the protected reader
+core remains stdlib-only:
+
+```bash
+python3 -m venv /home/ubuntu/.openclaw/venvs/first-read-ingest
+/home/ubuntu/.openclaw/venvs/first-read-ingest/bin/python -m pip install \
+  -r requirements-ingest.txt
+
+/home/ubuntu/.openclaw/venvs/first-read-ingest/bin/python \
+  first_read_ingest.py 'https://example.com/article' \
+  --output-dir /path/to/private/first-read-sources
+
+python3 first_read.py plan \
+  --source /path/to/private/first-read-sources/web-OPAQUE-ID.md
+```
+
+The fetcher accepts only public `http`/`https` targets, rejects embedded
+credentials and private/loopback/link-local/reserved addresses, revalidates
+redirect targets, caps response size, requires HTML, writes atomically, and
+uses owner-only permissions. It does not carry browser cookies or logins.
+Paywalled sites may therefore produce a safely flagged stub. A browser-saved
+HTML/PDF import path remains future work.
+
 `begin` and `start` fail closed before revealing prose if import produces a
 passage far larger than the requested cadence. This catches malformed paragraph
 exports instead of spending an irreplaceable first encounter on one accidental
