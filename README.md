@@ -5,11 +5,45 @@ prose sequentially, requires a response before advancing, and persists enough
 reader-authored continuity to resume after a context reset without exposing
 future text.
 
-This repository currently contains a private v0.1 prototype. Do not use it on
-an irreplaceable first encounter yet.
+Whole-text access makes later meaning leak backward: an AI can describe a story
+in order after it already knows what every moment becomes. First Read protects
+the reader's history of knowing instead. A companion can misunderstand, predict,
+wait, revise, and discover before the ending turns those earlier responses into
+a tidy retrospective.
+
+This repository currently contains an **unpublished v0.1 release candidate**.
+Its short-work protected-reading core is working and has completed a real blind
+URL-to-discussion run. Formal chapter containers and hard chapter-boundary stops
+are not implemented yet, so do not spend an irreplaceable book encounter on it.
 
 Humans who want an optional menu of reading shapes, warning signs, and plain-
 language adjustment phrases can use [HUMAN-GUIDE.md](HUMAN-GUIDE.md).
+
+## v0.1 boundary
+
+The release candidate implements:
+
+- prose-free source preflight and adaptive, structure-aware Flow passages;
+- response-gated sequential disclosure with exact replay of the current passage;
+- immutable passage responses and atomic respond-plus-advance steps;
+- private SQLite persistence, append-only checkpoints, and cold-process resume;
+- honest prior-exposure receipts and fail-closed oversized-import checks;
+- blind public-URL ingestion into opaque owner-only files, with redirect,
+  address, content-type, and response-size guards; and
+- a human-facing reading-shape guide for choosing context, company, scope, and
+  pace without turning the encounter into a settings form.
+
+The release candidate does **not** yet implement:
+
+- a model-invoking Full Context or Lean Context runner;
+- formal book/chapter/section containers or a hard stop before the next chapter;
+- first-class chapter salience cards or rolling book state;
+- automatic Shared-mode final-sentence markers; or
+- authenticated/paywalled browser import, PDF import, MCP, or a graphical UI.
+
+Those distinctions are product boundaries, not small-print caveats. The CLI
+currently protects what it reveals; the companion or its harness still performs
+the reading and writes the responses.
 
 ## The joyflow
 
@@ -205,6 +239,12 @@ python3 first_read.py checkpoint --db /tmp/turnip.db --text "I distrust the drye
 python3 first_read.py resume --db /tmp/turnip.db
 ```
 
+Run the release-candidate regression suite with:
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
 ### URL ingest companion
 
 `first_read_ingest.py` fetches a public web article, extracts article-shaped
@@ -259,3 +299,8 @@ This is cooperative suspense, not adversarial containment. A companion with
 filesystem access can deliberately inspect the source or SQLite database.
 First Read guarantees that its own commands disclose passages in order and
 preserve the encounter record; it does not imprison a malicious reader.
+
+The draft v0.1 release narrative and ecological-test receipt are in
+[`docs/V0.1-RELEASE-DRAFT.md`](docs/V0.1-RELEASE-DRAFT.md). The architecture and
+token audit is in
+[`docs/FIRST-READ-ARCHITECTURE-AUDIT-2026-10-02.md`](docs/FIRST-READ-ARCHITECTURE-AUDIT-2026-10-02.md).
