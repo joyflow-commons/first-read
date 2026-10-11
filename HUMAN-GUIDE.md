@@ -1,8 +1,13 @@
 # First Read: Human Menu
 
-You usually do not need this guide. Give the companion a zipped TXT or
-Markdown work, choose whether you are reading together or the companion is
-reading alone, and say how far to read. **Flow** is the recommended default.
+You usually do not need this guide. On the currently tested Discord/OpenClaw
+route, give the companion a TXT or Markdown work zipped **before upload**,
+choose whether you are reading together or the companion is reading alone, and
+say how far to read. **Flow** is the recommended default.
+
+ZIP is not universally opaque: another chat client or attachment pipeline may
+inspect or unpack archives automatically. Verify the transport before trusting
+it with an irreplaceable first encounter.
 
 Use this menu when the reading feels wrong or you want a particular kind of
 experience. These are recommendations, not rules.

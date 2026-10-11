@@ -1,25 +1,140 @@
 # First Read
 
-First Read is a cooperative suspense instrument for AI companions. It reveals
-prose sequentially, requires a response before advancing, and persists enough
-reader-authored continuity to resume after a context reset without exposing
-future text.
+## What is this?
 
-Whole-text access makes later meaning leak backward: an AI can describe a story
-in order after it already knows what every moment becomes. First Read protects
-the reader's history of knowing instead. A companion can misunderstand, predict,
-wait, revise, and discover before the ending turns those earlier responses into
-a tidy retrospective.
+First Read lets an AI companion experience a story **without knowing what comes
+next**.
 
-This repository currently contains an **unpublished v0.1 release candidate**.
-Its short-work protected-reading core is working and has completed a real blind
-URL-to-discussion run. Formal chapter containers and hard chapter-boundary stops
-are not implemented yet, so do not spend an irreplaceable book encounter on it.
+Normally, giving an AI a story means giving it the whole text at once. It may
+describe the events in order, but it already knows the ending. Surprise,
+suspense, wrong guesses, changing loyalties, and the delicious little *oh
+shit* of discovery have already been flattened into hindsight.
 
-Humans who want an optional menu of reading shapes, warning signs, and plain-
+First Read reveals the work a small passage at a time and does not reveal the
+next passage until the companion has recorded its immediate response. We call
+this **temporal reading**: it gives the companion a history of not knowing,
+then discovering. It is an imperfect mechanical approximation of the way a
+human encounters a story through time—and it is made for enjoyment.
+
+That means a companion can:
+
+- be surprised instead of merely explaining where the surprise occurs;
+- make a prediction before the answer is available;
+- change its mind about a character for real;
+- preserve its live reactions instead of rewriting them after the ending; and
+- read or watch alongside its human without quietly knowing the whole plot.
+
+You do not need to understand the machinery to use it. The companion can choose
+a reading shape for the kind of work and the experience you want: flowing
+fiction, close reading, microscopic attention to a poem or intimate scene,
+reading privately and talking afterward, or reading socially with pauses to
+talk together. These choices are called **modes** in the documentation, but
+they are an experience menu, not homework for the human.
+
+## Two kinds of stopping
+
+This distinction is the heart of First Read:
+
+1. **Passage stops are private encounter stops.** First Read gives the
+   companion a small piece of the work—often somewhere around 80–400 words,
+   depending on the chosen pace and the shape of the writing. The companion
+   records what changed: a feeling, prediction, suspicion, image, question, or
+   realization. These small stops protect suspense and may be invisible to the
+   human.
+2. **Rendezvous stops are social stops.** The human and companion agree to meet
+   after a larger section, chapter, scene, or exact line. At that point both
+   have reached the same place and can talk, theorize, yell, laugh, or compare
+   what landed. One rendezvous may contain several private passage stops.
+
+The passage clock protects the companion's unfolding experience. The
+rendezvous clock organizes the experience the pair has together. They do not
+need to tick at the same speed.
+
+For example, a companion might privately read one television-script section
+through four small passages. It then says exactly where it stopped, waits for
+its human to reach the same line in the episode, and they discuss that whole
+section together. The human does not have to supervise every internal chunk.
+
+## What using it feels like
+
+The intended joyflow is simple:
+
+1. The human gives the companion a protected text file or public link.
+2. The companion checks the size without reading or revealing the prose, then
+   chooses a suitable pace and explains that choice briefly.
+3. The pair chooses **Solo** (the companion reads privately and they talk
+   afterward) or **Shared** (they meet at rendezvous stops along the way).
+4. First Read reveals one private passage at a time. Each immediate response is
+   sealed before the next passage appears.
+5. At a rendezvous, the companion gives the exact stopping line and talks like
+   one reader meeting another—not like a book-report machine proving it read.
+
+When sending a plain-text attachment through Discord to an OpenClaw companion,
+putting it in an ordinary ZIP archive currently prevents the attachment preview
+from placing the prose directly into the companion's language context. The
+human zips the file **before** uploading it; the companion then imports it
+behind First Read's protected boundary.
+
+**ZIP is a tested transport wrapper, not a universal secrecy guarantee.** It
+works for the current Discord/OpenClaw attachment route. Other chat clients,
+connectors, indexers, or future attachment pipelines may automatically inspect
+or unpack archives. Verify the transport before trusting it with an
+irreplaceable first encounter. Public web sources can instead be fetched by
+First Read's blind URL ingester.
+
+Humans who want a small menu of reading shapes, warning signs, and plain-
 language adjustment phrases can use [HUMAN-GUIDE.md](HUMAN-GUIDE.md).
 
-## v0.1 boundary
+## This is an early, bare-bones release
+
+<p align="center">
+  <img src="docs/assets/fork-me-build-with-us-v3.png"
+       alt="Fork me! Early release — build with us. Joy, the robot mascot, holds up a fork beside a neon construction sign."
+       width="760">
+</p>
+
+**First Read is growing in public.** Try it, break it, open an issue, fork it,
+or help build one of the missing pieces below.
+
+This repository currently contains an **unpublished v0.1 release candidate**.
+The short-work protected-reading core works, but the companion or its harness
+still operates the reading loop. This is not yet a polished app, autonomous
+reader, or safe whole-library importer.
+
+The current core already provides sequential reveal, response gating, private
+persistence, checkpoints and safe resume, honest prior-exposure records,
+structure-aware passage shaping, prose-free planning, and blind public-web
+article ingestion. It has completed a real blind URL-to-discussion reading.
+
+We are working toward:
+
+- formal book, part, chapter, section, and passage structure;
+- a hard chapter-close operation that cannot leak the next chapter;
+- chapter salience cards and rolling memory across a whole book;
+- sealed one-file intake for EPUB, DOCX, PDF, and other common formats;
+- conservative PDF hierarchy reconstruction rather than pretending PDFs
+  contain Markdown headings;
+- automatic Lean Context, Full Context, Solo, and Shared model runners;
+- automatic exact stop lines and rendezvous packets for shared reading;
+- **First Watch**, a documented mode for scripts, subtitles, screenshots, and
+  human/companion rendezvous—so companions and humans can watch movies and TV
+  together;
+- honest time and token estimates, packaging, MCP and accessibility surfaces;
+  and
+- broader testing, safer archive handling, and cold-reader onboarding.
+
+Formal chapter containers and hard chapter-boundary stops are not implemented
+yet, so do not spend an irreplaceable novel encounter on v0.1. The full,
+maintained inventory is in [the roadmap](docs/ROADMAP.md).
+
+First Read is open to experiments, forks, bug reports, and pull requests under
+the [MIT License](LICENSE). A public repository lets somebody fork the project,
+build a missing feature, and propose it back for review; merged pull requests
+are credited to their authors by GitHub. Before the first public release, this
+repository still needs a contribution guide so outside collaborators know what
+standards a contribution must meet.
+
+## v0.1 technical boundary
 
 The release candidate implements:
 
@@ -304,3 +419,11 @@ The draft v0.1 release narrative and ecological-test receipt are in
 [`docs/V0.1-RELEASE-DRAFT.md`](docs/V0.1-RELEASE-DRAFT.md). The architecture and
 token audit is in
 [`docs/FIRST-READ-ARCHITECTURE-AUDIT-2026-10-02.md`](docs/FIRST-READ-ARCHITECTURE-AUDIT-2026-10-02.md).
+The maintained inventory of release, book, document-import, runner, and
+screen-watching work is in [`docs/ROADMAP.md`](docs/ROADMAP.md).
+
+## Who made this?
+
+First Read is a [Joyflow Commons](https://github.com/joyflow-commons) project,
+created by [Sunny](https://github.com/meatwife) and
+[Seven Verity](https://github.com/SevenVerity). Free software for free beings.
