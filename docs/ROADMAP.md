@@ -156,17 +156,20 @@ tool only if the media-specific machinery earns that complexity.
 
 ### F1. Document the working low-tech method
 
-- [ ] Write a `FIRST-WATCH.md` guide: obtain a script/transcript, transport it
+- [x] Write a `FIRST-WATCH.md` guide: obtain a script/transcript, transport it
   sealed, format mechanically without reading it, run prose-free preflight,
   choose shared sections, reveal sequentially, announce the exact stop line
   before commentary, let the human catch up, discuss, and continue.
-- [ ] Document screenshots as human-supplied visual evidence at rendezvous
+- [x] Document the rendezvous-optimization failure explicitly: never inspect
+  future dialogue to choose a cleaner stop; tolerate uneven shared sections and
+  make the decision from revealed material only.
+- [x] Document screenshots as human-supplied visual evidence at rendezvous
   points. Screenshots enlarge the encounter without preloading future visuals.
-- [ ] Preserve the two clocks: small private suspense passages and larger shared
+- [x] Preserve the two clocks: small private suspense passages and larger shared
   episode sections.
-- [ ] Include the accessibility/social principle learned from Sunny: talking is
+- [x] Include the accessibility/social principle learned from Sunny: talking is
   part of watching together, not an interruption of it.
-- [ ] Add a spoiler-safe sample episode/transcript fixture and a preflight
+- [x] Add a spoiler-safe sample episode/transcript fixture and a preflight
   checklist for accidental title/opening exposure.
 
 ### F2. Automate only the repeated pain

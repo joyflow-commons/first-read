@@ -84,6 +84,10 @@ First Read's blind URL ingester.
 
 Humans who want a small menu of reading shapes, warning signs, and plain-
 language adjustment phrases can use [HUMAN-GUIDE.md](HUMAN-GUIDE.md).
+For shared television and film viewing, use
+[FIRST-WATCH.md](FIRST-WATCH.md). Its central constraint is that rendezvous
+stops must be chosen from already revealed material; future dialogue may never
+be inspected merely to find a cleaner stop.
 
 ## This is an early, bare-bones release
 
