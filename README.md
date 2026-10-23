@@ -134,9 +134,8 @@ maintained inventory is in [the roadmap](docs/ROADMAP.md).
 First Read is open to experiments, forks, bug reports, and pull requests under
 the [MIT License](LICENSE). A public repository lets somebody fork the project,
 build a missing feature, and propose it back for review; merged pull requests
-are credited to their authors by GitHub. Before the first public release, this
-repository still needs a contribution guide so outside collaborators know what
-standards a contribution must meet.
+are credited to their authors by GitHub. See [CONTRIBUTING.md](CONTRIBUTING.md) for contributions, issue reports,
+and the privacy boundary.
 
 ## v0.1 technical boundary
 
@@ -348,6 +347,48 @@ in it too. Sometimes the honest configuration is: “I want this one in the whol
 living room. Fuck the meter.” Cost data supports a shared decision; it does not
 write the reader's wants out of the experience.
 
+## Setup and first run
+
+Use Python 3.10 or newer with SQLite support. The core has no third-party
+Python dependencies. Download/extract this repository or clone it, then open a
+terminal in its root directory. This release candidate runs directly as Python
+scripts; there is no `pip install first-read` step or installed console command.
+Python 3.14.4 on Linux has been clean-environment tested; other platforms have
+not yet been verified.
+
+Start with the disposable story below, not an irreplaceable unread work. Create
+a fresh scratch directory; keep real reading databases outside the checkout.
+
+```bash
+python3 --version
+python3 -m unittest discover -s tests -v
+mkdir first-read-practice
+python3 first_read.py plan --source examples/detective-turnip.md
+python3 first_read.py begin --db first-read-practice/turnip.db --source examples/detective-turnip.md
+```
+
+Read the opening, then seal your own reaction. These sample responses only
+exercise the controls; they are not a substitute for a reader's encounter.
+
+```bash
+python3 first_read.py respond --db first-read-practice/turnip.db --text "The sock knows too much."
+python3 first_read.py checkpoint --db first-read-practice/turnip.db --text "Paused after the opening; the sock is suspicious."
+python3 first_read.py resume --db first-read-practice/turnip.db
+```
+
+`resume` does not advance. You can close the terminal, reopen it in the same
+repository, and run that command again. When ready to continue:
+
+```bash
+python3 first_read.py next --db first-read-practice/turnip.db
+python3 first_read.py step --db first-read-practice/turnip.db --text "I should have trusted the sock."
+```
+
+At the default pace this fixture has two passages; the final command seals the
+second response and reports completion. Reusing that database for `begin` is
+refused: choose a new filename for another encounter. For a three-scene shared
+viewing rehearsal, follow [FIRST-WATCH.md](FIRST-WATCH.md).
+
 ## Prototype commands
 
 ```bash
@@ -377,17 +418,21 @@ Keep the optional extractor in its own environment so the protected reader
 core remains stdlib-only:
 
 ```bash
-python3 -m venv /home/ubuntu/.openclaw/venvs/first-read-ingest
-/home/ubuntu/.openclaw/venvs/first-read-ingest/bin/python -m pip install \
+python3 -m venv .venv-ingest
+.venv-ingest/bin/python -m pip install \
   -r requirements-ingest.txt
 
-/home/ubuntu/.openclaw/venvs/first-read-ingest/bin/python \
+.venv-ingest/bin/python \
   first_read_ingest.py 'https://example.com/article' \
   --output-dir /path/to/private/first-read-sources
 
 python3 first_read.py plan \
   --source /path/to/private/first-read-sources/web-OPAQUE-ID.md
 ```
+
+The environment commands above use POSIX paths; on Windows, use
+`.venv-ingest\Scripts\python.exe` instead. The article URL and private output
+paths are placeholders; replace them before ingestion.
 
 The fetcher accepts only public `http`/`https` targets, rejects embedded
 credentials and private/loopback/link-local/reserved addresses, revalidates

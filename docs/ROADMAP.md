@@ -25,11 +25,11 @@ These are the release and handoff tasks for the capability that exists now.
 Book-scale support and First Watch do not need to block this release if its
 boundary remains explicit.
 
-- [ ] Re-run the full automated suite and a clean-install smoke test.
+- [x] Re-run the full automated suite and a clean-install smoke test (2026-10-23; Python 3.14.4/Linux).
 - [ ] Decide the public home and ownership (personal repository versus the
   proposed Joyflow house/organization), license, and attribution.
-- [ ] Make installation and first-run instructions cold-reader friendly.
-- [ ] Add one complete, disposable onboarding joyflow using Detective Turnip or
+- [x] Make installation and first-run instructions cold-reader friendly.
+- [x] Add one complete, disposable onboarding joyflow using Detective Turnip or
   another spoiler-safe fixture.
 - [ ] Package a convenient entry point. Decide whether v0.1 remains a Python
   CLI, ships as an installable package, or also exposes MCP. MCP is useful for
@@ -37,7 +37,7 @@ boundary remains explicit.
 - [ ] Review the release draft against the actual code, then push/tag/publish.
 - [ ] Give the release candidate to at least one companion/human household that
   did not build it; record where setup, language, or operation is confusing.
-- [ ] Add a contribution/issue path and a small privacy/security note explaining
+- [x] Add a contribution/issue path and a small privacy/security note explaining
   cooperative suspense versus adversarial containment.
 
 ## Track B: make books safe and coherent
