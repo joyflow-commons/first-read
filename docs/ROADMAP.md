@@ -1,6 +1,6 @@
 # First Read roadmap
 
-**Status:** working inventory, 2026-10-10
+**Status:** working inventory, 2026-10-23
 
 This document separates the small, working short-form release from the larger
 book and screen-watching ambitions. A feature appearing here does not mean it
@@ -47,6 +47,11 @@ irreplaceable unread novel on a whole-book run.
 
 ### B1. Formal authored structure
 
+Initial slice implemented: explicit `--chapter-level` Markdown import stores
+chapter/passage spans under the session/work, rejects unsupported structure,
+and produces anonymous preflight counts. See [chapter mode](CHAPTER-MODE.md).
+Full hierarchy and automatic boundary confidence/correction remain open.
+
 - [ ] Store a real work -> part -> chapter/section -> passage hierarchy instead
   of treating headings only as passage-shaping hints.
 - [ ] Detect explicit Markdown headings and other authored boundaries without
@@ -57,14 +62,18 @@ irreplaceable unread novel on a whole-book run.
 
 ### B2. Hard scope closing
 
-- [ ] Add one atomic scope-close action that seals the final response in a
+- [x] Add one atomic scope-close action that seals the final response in a
   chapter, creates the chapter artifacts, and stops before chapter two.
-- [ ] Ensure `resume` respects the closed boundary and cannot expose the next
+- [x] Ensure `resume` respects the closed boundary and cannot expose the next
   scope until the next chapter is deliberately begun.
-- [ ] Prove this first with a disposable synthetic multi-chapter work, including
+- [x] Prove this first with a disposable synthetic multi-chapter work, including
   a fresh-process resume at the seam.
 
 ### B3. Long-work continuity
+
+Chapter closure now stores immutable caller-written cards and state deltas;
+resume includes completed artifacts. Structured salience fields, compact rolling
+state, and targeted retrieval below are not yet implemented.
 
 - [ ] Store first-class chapter salience cards: largest reveal, strongest
   emotional hit, major reinterpretation, state/relationship changes, and live

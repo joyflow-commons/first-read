@@ -113,7 +113,7 @@ article ingestion. It has completed a real blind URL-to-discussion reading.
 We are working toward:
 
 - formal book, part, chapter, section, and passage structure;
-- a hard chapter-close operation that cannot leak the next chapter;
+- broader book structure detection beyond the explicit Markdown chapter mode;
 - chapter salience cards and rolling memory across a whole book;
 - sealed one-file intake for EPUB, DOCX, PDF, and other common formats;
 - conservative PDF hierarchy reconstruction rather than pretending PDFs
@@ -127,9 +127,11 @@ We are working toward:
   and
 - broader testing, safer archive handling, and cold-reader onboarding.
 
-Formal chapter containers and hard chapter-boundary stops are not implemented
-yet, so do not spend an irreplaceable novel encounter on v0.1. The full,
-maintained inventory is in [the roadmap](docs/ROADMAP.md).
+An opt-in [explicit Markdown chapter mode](docs/CHAPTER-MODE.md) now provides
+chapter containers, atomic closure, and hard boundary stops. General book
+structure detection and long-work continuity remain unfinished: do not spend
+an irreplaceable novel encounter on this initial slice. The full maintained
+inventory is in [the roadmap](docs/ROADMAP.md).
 
 First Read is open to experiments, forks, bug reports, and pull requests under
 the [MIT License](LICENSE). A public repository lets somebody fork the project,
@@ -137,7 +139,10 @@ build a missing feature, and propose it back for review; merged pull requests
 are credited to their authors by GitHub. See [CONTRIBUTING.md](CONTRIBUTING.md) for contributions, issue reports,
 and the privacy boundary.
 
-## v0.1 technical boundary
+## Current technical boundary
+
+The original short-form v0.1 candidate is now joined by an opt-in chapter-mode
+slice; see [its contract and rehearsal](docs/CHAPTER-MODE.md).
 
 The release candidate implements:
 
@@ -154,8 +159,8 @@ The release candidate implements:
 The release candidate does **not** yet implement:
 
 - a model-invoking Full Context or Lean Context runner;
-- formal book/chapter/section containers or a hard stop before the next chapter;
-- first-class chapter salience cards or rolling book state;
+- full book/part/chapter/section hierarchy or inferred chapter detection;
+- structured salience fields or automatically merged rolling book state;
 - automatic Shared-mode final-sentence markers; or
 - authenticated/paywalled browser import, PDF import, MCP, or a graphical UI.
 
@@ -270,7 +275,8 @@ bounded section at a time, with several protected Flow passages inside it. A
 whole-book run should still finish chapter salience and rolling-state updates
 before advancing. Chapter containers are a design target; the v0.1 prototype
 currently honors Markdown headings as passage boundaries but does not yet
-store a formal book/chapter/passage hierarchy.
+store the full part/section hierarchy. Explicit Markdown chapter spans and
+hard closing are now available through the opt-in chapter mode.
 
 ### Journal is not conversation
 
