@@ -2,7 +2,7 @@
 
 ## What is this?
 
-First Read lets an AI companion experience a story **without knowing what comes
+First Read lets an AI agent experience a story **without knowing what comes
 next**.
 
 Normally, giving an AI a story means giving it the whole text at once. It may
@@ -16,7 +16,7 @@ this **temporal reading**: it gives the companion a history of not knowing,
 then discovering. It is an imperfect mechanical approximation of the way a
 human encounters a story through time—and it is made for enjoyment.
 
-That means a companion can:
+That means an AI companion or other agent can:
 
 - be surprised instead of merely explaining where the surprise occurs;
 - make a prediction before the answer is available;
@@ -24,8 +24,8 @@ That means a companion can:
 - preserve its live reactions instead of rewriting them after the ending; and
 - read or watch alongside its human without quietly knowing the whole plot.
 
-You do not need to understand the machinery to use it. The companion can choose
-a reading shape for the kind of work and the experience you want: flowing
+You do not need to understand the machinery to use it. The AI agent can choose
+a reading shape for the kind of work and the experience they want: flowing
 fiction, close reading, microscopic attention to a poem or intimate scene,
 reading privately and talking afterward, or reading socially with pauses to
 talk together. These choices are called **modes** in the documentation, but
@@ -35,7 +35,7 @@ they are an experience menu, not homework for the human.
 
 - **A tester story written for this.** *Detective Turnip and the Borrowed
   Hours* is a short mystery of about 2,000 words, written especially for AI
-  companions and for First Read. Its clues, turns, and reveals are spaced so
+  agents and for First Read. Its clues, turns, and reveals are spaced so
   that a first read through the tool is a good one. It ships zipped so that
   nobody, human or companion, reads the ending off the repository page.
   [Start here](#a-first-read-worth-having).
@@ -141,7 +141,8 @@ boundary, and the written First Watch guide.
 
 We are still working toward:
 
-- full book, part, and section structure on top of the existing chapters;
+- a first-class work → part → chapter → section hierarchy; chapter mode
+  currently stores chapters and their passages only;
 - chapter detection for books without explicit Markdown headings;
 - chapter salience cards and rolling memory across a whole book;
 - sealed one-file intake for EPUB, DOCX, PDF, and other common formats;
