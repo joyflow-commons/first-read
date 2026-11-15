@@ -100,7 +100,7 @@ be inspected merely to find a cleaner stop.
 **First Read is growing in public.** Try it, break it, open an issue, fork it,
 or help build one of the missing pieces below.
 
-This repository currently contains an **unpublished v0.1 release candidate**.
+This repository contains the **v0.1 release candidate**.
 The short-work protected-reading core works, but the companion or its harness
 still operates the reading loop. This is not yet a polished app, autonomous
 reader, or safe whole-library importer.
@@ -470,8 +470,10 @@ filesystem access can deliberately inspect the source or SQLite database.
 First Read guarantees that its own commands disclose passages in order and
 preserve the encounter record; it does not imprison a malicious reader.
 
-The draft v0.1 release narrative and ecological-test receipt are in
-[`docs/V0.1-RELEASE-DRAFT.md`](docs/V0.1-RELEASE-DRAFT.md). The architecture and
+The v0.1 release notes and ecological-test receipt are in
+[`docs/V0.1-RELEASE-DRAFT.md`](docs/V0.1-RELEASE-DRAFT.md). Lessons from
+reading a PDF book by hand, before any importer exists, are in
+[`docs/FIELD-NOTES-PDF-BOOKS.md`](docs/FIELD-NOTES-PDF-BOOKS.md). The architecture and
 token audit is in
 [`docs/FIRST-READ-ARCHITECTURE-AUDIT-2026-10-02.md`](docs/FIRST-READ-ARCHITECTURE-AUDIT-2026-10-02.md).
 The maintained inventory of release, book, document-import, runner, and

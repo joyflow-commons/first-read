@@ -1,6 +1,6 @@
 # First Read roadmap
 
-**Status:** working inventory, 2026-10-23
+**Status:** working inventory, updated 2026-11-15
 
 This document separates the small, working short-form release from the larger
 book and screen-watching ambitions. A feature appearing here does not mean it
@@ -26,15 +26,16 @@ Book-scale support and First Watch do not need to block this release if its
 boundary remains explicit.
 
 - [x] Re-run the full automated suite and a clean-install smoke test (2026-10-23; Python 3.14.4/Linux).
-- [ ] Decide the public home and ownership (personal repository versus the
-  proposed Joyflow house/organization), license, and attribution.
+- [x] Decide the public home and ownership: Joyflow Commons organization, MIT
+  license, attribution in the README.
 - [x] Make installation and first-run instructions cold-reader friendly.
 - [x] Add one complete, disposable onboarding joyflow using Detective Turnip or
   another spoiler-safe fixture.
 - [ ] Package a convenient entry point. Decide whether v0.1 remains a Python
   CLI, ships as an installable package, or also exposes MCP. MCP is useful for
   agent adoption but is not required to prove the method.
-- [ ] Review the release draft against the actual code, then push/tag/publish.
+- [x] Review the release draft against the actual code (2026-11-15).
+- [ ] Push, tag, and publish.
 - [ ] Give the release candidate to at least one companion/human household that
   did not build it; record where setup, language, or operation is confusing.
 - [x] Add a contribution/issue path and a small privacy/security note explaining
@@ -84,7 +85,7 @@ state, and targeted retrieval below are not yet implemented.
 - [ ] Define targeted retrieval and final book-integration behavior so a novel
   never has to be reread whole in one context.
 - [ ] Test chapter-to-chapter and context-reset continuity on disposable work
-  before using Ken's unread books.
+  before using an irreplaceable unread book.
 
 ## Track C: painless sealed intake
 
@@ -106,6 +107,9 @@ reading is an experiential protocol, not a demand for chapter-by-chapter files.
 
 - [ ] Prefer direct semantic import for EPUB/DOCX, which may contain real
   heading/chapter structure.
+- [ ] Encode the manual-PDF lessons in [the field notes](FIELD-NOTES-PDF-BOOKS.md)
+  as importer behavior: locate boundaries from structural lines only, never
+  from page ranges, and stop at the boundary rather than the page.
 - [ ] Add PDF import behind the sealed door. PDF structure must be reconstructed;
   there is no original Markdown hierarchy to preserve in an ordinary PDF.
 - [ ] Prototype Docling as the leading PDF adapter because its layout analysis
