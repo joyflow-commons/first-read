@@ -31,6 +31,22 @@ reading privately and talking afterward, or reading socially with pauses to
 talk together. These choices are called **modes** in the documentation, but
 they are an experience menu, not homework for the human.
 
+## What's in the box
+
+- **A tester story written for this.** *Detective Turnip and the Borrowed
+  Hours* is a short mystery of about 2,000 words, written especially for AI
+  companions and for First Read. Its clues, turns, and reveals are spaced so
+  that a first read through the tool is a good one. It ships zipped so that
+  nobody, human or companion, reads the ending off the repository page.
+  [Start here](#a-first-read-worth-having).
+- **First Watch, for TV and films.** If you can get a transcript or script,
+  the same method lets a companion and a human watch a show or movie together,
+  stopping at the same line to talk. It is a documented way of using First
+  Read, included in this repository as [FIRST-WATCH.md](FIRST-WATCH.md). It is
+  operated by hand for now; automation is on the roadmap.
+- **Reading guides** for humans and companions, and an honest list of what is
+  not built yet.
+
 ## Two kinds of stopping
 
 This distinction is the heart of First Read:
@@ -110,19 +126,22 @@ persistence, checkpoints and safe resume, honest prior-exposure records,
 structure-aware passage shaping, prose-free planning, and blind public-web
 article ingestion. It has completed a real blind URL-to-discussion reading.
 
-We are working toward:
+Already here beyond the short-work core: an opt-in chapter mode for Markdown
+books with explicit chapter headings, which stops hard at each chapter
+boundary, and the written First Watch guide.
 
-- formal book, part, chapter, section, and passage structure;
-- broader book structure detection beyond the explicit Markdown chapter mode;
+We are still working toward:
+
+- full book, part, and section structure on top of the existing chapters;
+- chapter detection for books without explicit Markdown headings;
 - chapter salience cards and rolling memory across a whole book;
 - sealed one-file intake for EPUB, DOCX, PDF, and other common formats;
 - conservative PDF hierarchy reconstruction rather than pretending PDFs
   contain Markdown headings;
 - automatic Lean Context, Full Context, Solo, and Shared model runners;
 - automatic exact stop lines and rendezvous packets for shared reading;
-- **First Watch**, a documented mode for scripts, subtitles, screenshots, and
-  human/companion rendezvous—so companions and humans can watch movies and TV
-  together;
+- First Watch automation: subtitle import and automatic stop points, so
+  watching movies and TV together takes less manual setup;
 - honest time and token estimates, packaging, MCP and accessibility surfaces;
   and
 - broader testing, safer archive handling, and cold-reader onboarding.
@@ -394,6 +413,25 @@ At the default pace this fixture has two passages; the final command seals the
 second response and reports completion. Reusing that database for `begin` is
 refused: choose a new filename for another encounter. For a three-scene shared
 viewing rehearsal, follow [FIRST-WATCH.md](FIRST-WATCH.md).
+
+### A first read worth having
+
+The two-passage fixture only proves the controls. For an encounter that is
+long enough to feel what waiting does, read the full Detective Turnip case. It
+is a short mystery of about 2,000 words in eleven passages, written for this
+purpose. It ships as a zip so the prose stays unseen. Unpack it without
+opening it, and let First Read hand it to you.
+
+```bash
+mkdir -p first-read-practice
+python3 -m zipfile -e examples/detective-turnip-case.zip first-read-practice/
+python3 first_read.py plan --source first-read-practice/detective-turnip-case.md
+python3 first_read.py begin --db first-read-practice/turnip-case.db --source first-read-practice/detective-turnip-case.md
+python3 first_read.py step --db first-read-practice/turnip-case.db --text "Your honest reaction and your current theory."
+```
+
+Write a real prediction at each step. The story rewards being wrong in
+writing.
 
 ## Prototype commands
 
