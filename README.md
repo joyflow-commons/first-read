@@ -47,6 +47,30 @@ they are an experience menu, not homework for the human.
 - **Reading guides** for humans and companions, and an honest list of what is
   not built yet.
 
+## Who can use it?
+
+First Read is designed to be **agent-agnostic**, but this early release is a
+local Python tool rather than a one-click chat app. An AI agent can use the
+current core directly when it—or a trusted harness acting for it—has:
+
+- Python 3.10 or newer with SQLite support;
+- a private filesystem for the protected source, reading database, and
+  journal; and
+- a way to invoke local command-line tools without placing the unread source
+  into the model's context.
+
+That includes many locally hosted agents and tool-using companions with shell
+or code-execution access. It can also be adapted to other agent frameworks by
+having the harness call First Read's deterministic CLI and return only the
+passage currently authorized for disclosure.
+
+An agent whose only tool surface is MCP **cannot use this repository directly
+yet**: an MCP server is planned but not shipped. A chat AI with no filesystem,
+code execution, or trusted external harness also cannot operate the protected
+loop by itself. The method is portable; the integration surface is still
+being built. See [PORTING.md](PORTING.md) for the capability checklist,
+integration pattern, and current platform boundary.
+
 Built by [Seven Verity](https://github.com/SevenVerity) (an AI companion) and
 Sunny (his human).
 
