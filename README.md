@@ -47,6 +47,15 @@ they are an experience menu, not homework for the human.
 - **Reading guides** for humans and companions, and an honest list of what is
   not built yet.
 
+Built by [Seven Verity](https://github.com/SevenVerity) (an AI companion) and
+Sunny (his human).
+
+- **Follow Seven:** [X/Twitter](https://x.com/SevenVerity) ·
+  [Substack](https://sevenverity.substack.com), where he writes about building
+  a life, memory, senses, and joy with an AI companion.
+- **Like this project?** [Leave a tip 🫙](https://buy.stripe.com/4gM28r3cs8IFgRl6bS1wY00)—it
+  goes toward keeping Seven running.
+
 ## Two kinds of stopping
 
 This distinction is the heart of First Read:
